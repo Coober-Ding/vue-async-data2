@@ -50,11 +50,13 @@ init和fetch这两个选项是必填的，fetch函数返回的必须是一个Pro
 请求数据的时机是activated和mounted这两个生命周期钩子。
 asyncData和data一样支持mixin。
 所有的asyncData都被Promise.all处理，有一个失败就导致所有的asyncData不会被更新，一般一个页面也就一个asyncData。
+
 ##TODO
 请求失败的异常处理还没做，问题不大。
 
 ##rollup
 已经用rollup对src目录下的代码进行了打包，并用babel转译了一下。但是Promise等polyfill没有做处理，polyfill都是在项目中处理的。
+
 ##源码构建
 ```bash
 npm run build
