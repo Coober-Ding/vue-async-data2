@@ -1,5 +1,5 @@
 {
-  "name": "@cooper-ding/vue-async-data",
+  "name": "@zyyz/vue-async-data",
   "version": "1.0.0",
   "description": "fetch data from remote",
   "main": "dist/index.js",
@@ -13,6 +13,7 @@
     "async"
   ],
   "author": "coober-ding",
+  "scope": "@zyyz",
   "license": "ISC",
   "repository": {
     "type": "git",
