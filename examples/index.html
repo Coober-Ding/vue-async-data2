@@ -1,0 +1,72 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <div id="app">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <script src="../dist/index.js"></script>
+    <script>
+      var testMixin = {
+        asyncData: {
+          message2: {
+            watch:['count'],
+            init () {
+              return 'message2'
+            },
+            fetch () {
+              return new Promise((resolve) => {
+                setTimeout(() => {
+                  // eslint-disable-next-line
+                  console.log('receive')
+                  resolve('Welcome to Your Vue.js App')
+                }, 1000)
+              })
+            }
+          }
+        }
+      }
+      
+      new Vue({
+        name: 'app',
+        mixins: [testMixin, AsyncDataMixin],
+        asyncData: {
+          message: {
+            watch:['count'],
+            init () {
+              return 'message1'
+            },
+            fetch () {
+              return new Promise((resolve) => {
+                setTimeout(() => {
+                  // eslint-disable-next-line
+                  console.log('receive')
+                  resolve('Welcome to Your Vue.js App')
+                }, 1000)
+              })
+            }
+          }
+        },
+        data () {
+          return {
+            count: 0
+          }
+        },
+        methods: {
+          add () {
+            let _ = this.count + 1
+            this.count = _
+            this.message = this.message + '@'
+            this.message2 = this.message2 + '@'
+          }
+        },
+        template: `<div>
+          <div>{{message}}</div>
+          <div>{{message2}}</div>
+          <div>{{count}}</div>
+          <button @click="add">+</button>
+        </div>`
+      }).$mount('#app')
+      </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "vue-async-data2",
+  "version": "1.0.0",
+  "description": "fetch data from remote",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c"
+  },
+  "keywords": [
+    "vue",
+    "async"
+  ],
+  "author": "coober-ding",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "rollup": "^0.67.4",
+    "rollup-plugin-babel": "^4.1.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-uglify": "^6.0.0",
+    "uglify-js": "^3.4.9"
+  }
+}
