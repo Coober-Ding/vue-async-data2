@@ -1,8 +1,9 @@
 {
-  "name": "vue-async-data2",
+  "name": "@cooper-ding/vue-async-data",
   "version": "1.0.0",
   "description": "fetch data from remote",
   "main": "dist/index.js",
+  "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c"
@@ -13,6 +14,10 @@
   ],
   "author": "coober-ding",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Coober-Ding/vue-async-data2.git"
+  },
   "devDependencies": {
     "@babel/core": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
