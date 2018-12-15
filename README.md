@@ -3,11 +3,11 @@
 
 ### Installation
 ```bash
-npm i --save @cooper-ding/vue-async-data
+npm i --save @zyyz/vue-async-data
 ```
 ### example
 ```java script
-import AsyncDataMixin from 'vue-async-data'
+import AsyncDataMixin from '@zyyz/vue-async-data'
 {
 name: 'app',
 mixins: [AsyncDataMixin],
