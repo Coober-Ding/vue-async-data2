@@ -50,7 +50,7 @@ data () {
 ## Description
 一个用来异步加载数据的vue插件，模仿了nuxt.js的aysncData。
 init和fetch这两个选项是必填的，fetch函数返回的必须是一个Promise对象。watch选项可以watch一个或多个data、prop或computed，其实就是利用了$watch()。
-请求数据的时机是activated和mounted这两个生命周期钩子。
+请求数据的时机是activated和mounted这两个生命周期钩子。fetch和error中的this是当前的vm对象，和method一样。
 asyncData和data一样支持mixin。
 
 ## rollup

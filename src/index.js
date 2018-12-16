@@ -10,7 +10,7 @@ function addToQuene (vm, varName) {
       let queneCpy = quene.slice(0)
       quene.length = 0
       vm._asyncDataCtrl.hasWaitQue = false
-      queneCpy.map((varName) => {
+      queneCpy.forEach((varName) => {
         let option = vm.$options.asyncData[varName]
         let promise =  option.fetch.call(vm)
         return promise.then((resp) => {
