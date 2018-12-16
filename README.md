@@ -23,6 +23,9 @@ asyncData: {
           resolve('hello world')
         }, 1000)
       })
+    },
+    error (response) {
+      //do some thing with response
     }
   },
   otherSomeData: {
@@ -49,9 +52,6 @@ data () {
 init和fetch这两个选项是必填的，fetch函数返回的必须是一个Promise对象。watch选项可以watch一个或多个data、prop或computed，其实就是利用了$watch()。
 请求数据的时机是activated和mounted这两个生命周期钩子。
 asyncData和data一样支持mixin。
-
-## TODO
-请求失败的异常处理还没做，问题不大。
 
 ## rollup
 已经用rollup对src目录下的代码进行了打包，并用babel转译了一下。但是Promise等polyfill没有做处理，polyfill都是在项目中处理的。
