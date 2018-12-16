@@ -10,18 +10,20 @@ function addToQuene (vm, varName) {
       let queneCpy = quene.slice(0)
       quene.length = 0
       vm._asyncDataCtrl.hasWaitQue = false
-      //等待已结束 开始执行
-      vm.asyncDataLoading = true
-      Promise.all(queneCpy.map((varName) => {
-        let ps =  vm.$options.asyncData[varName].fetch.call(vm)
-        return ps
-      })).then((values) => {
-        vm.asyncDataLoading = false
-        for (var i = 0;i < queneCpy.length;i++) {
-          let name = queneCpy[i]
-          let value = values[i]
-          vm[name] = value
-        }
+      queneCpy.map((varName) => {
+        let option = vm.$options.asyncData[varName]
+        let promise =  option.fetch.call(vm)
+        return promise.then((resp) => {
+          // merge to data when success
+          vm[varName] = resp
+        }, (resp) => {
+          // call error hook or log
+          if (isFunction(option.error)) {
+            option.error.call(vm, resp)
+          } else {
+            window.console.warn(`you got a error when fecth asyncData[${varName}] from remote`)
+          }
+        })
       })
     })
     vm._asyncDataCtrl.hasWaitQue = true
@@ -62,7 +64,7 @@ function validityOptions (options) {
   let result = true
   Object.keys(options).forEach((key) => {
     let option = options[key]
-    if (!isDef(option) || !isFunction(option.fetch)) {
+    if (!isDef(option) || !isFunction(option.fetch) || !isFunction(option.init)) {
       result = false
     }
   })
@@ -110,11 +112,6 @@ function initAsyncData (vm, options) {
 }
 
 var AsyncDataMixin = {
-  data () {
-    return {
-      asyncDataLoading: false
-    }
-  },
   beforeCreate () {
     let options = this.$options.asyncData
     preSetAsyncData(this, options)
