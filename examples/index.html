@@ -6,7 +6,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
     <script src="../dist/index.js"></script>
-    <script>
+    <script type="module">
       var testMixin = {
         asyncData: {
           message2: {
@@ -42,7 +42,7 @@
                   // eslint-disable-next-line
                   console.log('receive')
                   resolve('Welcome to Your Vue.js App')
-                }, 1000)
+                }, 2000)
               })
             }
           }
@@ -58,6 +58,10 @@
             this.count = _
             this.message = this.message + '@'
             this.message2 = this.message2 + '@'
+          },
+          fetch () {
+            this.$fetch('message')
+            this.$fetch('message')
           }
         },
         template: `<div>
@@ -65,6 +69,7 @@
           <div>{{message2}}</div>
           <div>{{count}}</div>
           <button @click="add">+</button>
+          <button @click="fetch">fetch</button>
         </div>`
       }).$mount('#app')
       </script>

@@ -2,7 +2,9 @@ import {isDef, isFunction} from './util.js'
 import Vue from 'vue'
 function addToQuene (vm, varName) {
   let quene = vm._asyncDataCtrl.quene
-  quene.push(varName)
+  if (quene.indexOf(varName) === -1) {
+    quene.push(varName)
+  }
 
   if (!vm._asyncDataCtrl.hasWaitQue) {
     //在下一个tick开始发起队列内的异步请求
@@ -42,21 +44,10 @@ function initVar (vm, name, initFunc) {
   }
 }
 
-function clearData (vm, options) {
-  let varNames = Object.keys(options)
-  varNames.forEach((varName) => {
-    let option = options[varName]
-    initVar(vm, varName, option.init)
-  })
-  vm._asyncDataCtrl.hasClear = true
-}
-
 function fetchData (vm, options) {
   Object.keys(options)
-  .filter((varName) => {
-    return vm._asyncDataCtrl.quene.indexOf(varName) === -1
-  }).forEach((varName) => {
-    addToQuene(vm, varName)
+  .forEach((varName) => {
+    fetchVar(vm, varName)
   })
 }
 
@@ -92,6 +83,10 @@ function initAsyncData (vm, options) {
     hasWaitQue: false,
     quene: []
   }
+  // 添加$fetch，用来强制刷新数据
+  vm.$fetch = function (varName) {
+    fetchVar(this, varName)
+  }
   
   let varNames = Object.keys(options)
   varNames.forEach((varName) => {
@@ -114,25 +109,26 @@ function initAsyncData (vm, options) {
 var AsyncDataMixin = {
   beforeCreate () {
     let options = this.$options.asyncData
-    preSetAsyncData(this, options)
+    if (isDef(options) && Object.keys(options).length > 0) {
+      preSetAsyncData(this, options)
+    }
   },
   created () {
     let options = this.$options.asyncData
-    if (isDef(options)) {
+    if (isDef(options) && Object.keys(options).length > 0) {
       initAsyncData(this, options)
     }
   },
   
   activated () {
-    let options = this.$options.asyncData
-    if (isDef(options)) {
-      clearData(this, options)
+    if (isDef(this._asyncDataCtrl)) {
+      let options = this.$options.asyncData
       fetchData(this, options)
     }
   },
   mounted () {
-    let options = this.$options.asyncData
-    if (isDef(options)) {
+    if (isDef(this._asyncDataCtrl)) {
+      let options = this.$options.asyncData
       fetchData(this, options)
     }
   }
