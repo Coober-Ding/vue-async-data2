@@ -61,20 +61,20 @@ import AsyncDataMixin from '@zyyz/vue-async-data'
 ```
 
 ## Description
-一个用来异步加载数据的vue插件，模仿了nuxt.js的aysncData。
-init和fetch这两个选项是必填的，fetch函数返回的必须是一个Promise对象。watch选项可以watch一个或多个data、prop或computed，其实就是利用了$watch()。
-请求数据的时机是activated和mounted这两个生命周期钩子。fetch和error中的this是当前的vm对象，和method一样。
-asyncData和data一样支持mixin。
+一个用来异步加载数据的vue插件，模仿了nuxt.js的aysncData。  
+init和fetch这两个选项是必填的，fetch函数返回的必须是一个Promise对象。watch选项可以watch一个或多个data、prop或computed，其实就是利用了$watch()。  
+请求数据的时机是activated和mounted这两个生命周期钩子。fetch和error中的this是当前的vm对象，和method一样。  
+asyncData和data一样支持mixin。  
 如果想强制刷新数据，可以调用this.$fetch('dataName')
 ## details
-延时刷新： 
-异步数据的拉取和vue的render机制差不多，其内部存在一个队列。一个异步数据需要被拉取时，它会加入到队列中。队列会在nextTick中被执行，这样就实现了一个delay机制，防止在一个tick中重复刷新。 
-队列控制： 
-为了精准控制是否刷新，本插件提供了api，以便对队列进行控制。 
-this.&#36;async.suspend() 可以将队列挂起，队列不会在nextTick中自动执行，即暂停了自动刷新机制
-this.&#36;async.resume() 结束挂起状态，恢复自动刷新机制，如果当前有挂起的队列，则立即执行队列
-this.&#36;async.clean() 可以清空队列
-强制刷新: 
+延时刷新：  
+异步数据的拉取和vue的render机制差不多，其内部存在一个队列。一个异步数据需要被拉取时，它会加入到队列中。队列会在nextTick中被执行，这样就实现了一个delay机制，防止在一个tick中重复刷新。    
+队列控制：  
+为了精准控制是否刷新，本插件提供了api，以便对队列进行控制。   
+this.&#36;async.suspend() 可以将队列挂起，队列不会在nextTick中自动执行，即暂停了自动刷新机制   
+this.&#36;async.resume() 结束挂起状态，恢复自动刷新机制，如果当前有挂起的队列，则立即执行队列    
+this.&#36;async.clean() 可以清空队列   
+强制刷新:   
 this.&#36;async.fetch('dataName') 强制将一个异步数据加入到队列当中
 ## rollup
 已经用rollup对src目录下的代码进行了打包，并用babel转译了一下。但是Promise等polyfill没有做处理。
