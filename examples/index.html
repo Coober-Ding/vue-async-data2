@@ -19,7 +19,7 @@
                 setTimeout(() => {
                   // eslint-disable-next-line
                   console.log('receive')
-                  resolve('Welcome to Your Vue.js App')
+                  resolve('Welcome to Your Vue.js App::' + this.count)
                 }, 1000)
               })
             }
@@ -41,7 +41,7 @@
                 setTimeout(() => {
                   // eslint-disable-next-line
                   console.log('receive')
-                  resolve('Welcome to Your Vue.js App')
+                  resolve('Welcome to Your Vue.js App:' + this.count)
                 }, 2000)
               })
             }
@@ -56,12 +56,16 @@
           add () {
             let _ = this.count + 1
             this.count = _
-            this.message = this.message + '@'
-            this.message2 = this.message2 + '@'
           },
           fetch () {
-            this.$fetch('message')
-            this.$fetch('message')
+            this.$async.fetch('message')
+            this.$async.fetch('message')
+          },
+          suspend () {
+            this.$async.suspend()
+          },
+          resume () {
+            this.$async.resume()
           }
         },
         template: `<div>
@@ -70,6 +74,8 @@
           <div>{{count}}</div>
           <button @click="add">+</button>
           <button @click="fetch">fetch</button>
+          <button @click="suspend">suspend</button>
+          <button @click="resume">resume</button>
         </div>`
       }).$mount('#app')
       </script>
