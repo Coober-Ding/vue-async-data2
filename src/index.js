@@ -43,7 +43,6 @@ class AsyncController {
   }
 
   addToQueue (varName) {
-    let vm = this.vm
     let queue = this._asyncDataCtrl.queue
 
     if (queue.indexOf(varName) === -1) {
@@ -52,17 +51,7 @@ class AsyncController {
     if (this._asyncDataCtrl.suspend) {
       return
     }
-    // 在nextTick刷新数据
-    if (!this._asyncDataCtrl.hasWaitQue) {
-      //添加一个延时任务 在下一个tick开始发起队列内的异步请求
-      vm.$nextTick(() => {
-        this._asyncDataCtrl.hasWaitQue = false
-        if (!this._asyncDataCtrl.suspend) {
-          this.executeQueue()
-        }
-      })
-      this._asyncDataCtrl.hasWaitQue = true
-    }
+    this.addDelayTask()
   }
   executeQueue () {
     let vm = this.vm
@@ -91,6 +80,22 @@ class AsyncController {
       })
     })
   }
+
+  addDelayTask () {
+    // 在nextTick刷新数据
+    if (!this._asyncDataCtrl.hasWaitQue) {
+      //添加一个延时任务 在下一个tick开始发起队列内的异步请求
+      let vm = this.vm
+      vm.$nextTick(() => {
+        this._asyncDataCtrl.hasWaitQue = false
+        if (!this._asyncDataCtrl.suspend) {
+          this.executeQueue()
+        }
+      })
+      this._asyncDataCtrl.hasWaitQue = true
+    }
+  }
+
   fetchVar (varName) {
     this.addToQueue(varName)
   }
@@ -110,11 +115,7 @@ class AsyncController {
   }
   resume () {
     this._asyncDataCtrl.suspend = false
-    // 如果有处于等待的任务，则交给它执行刷新
-    if (this._asyncDataCtrl.hasWaitQue) {
-      return
-    }
-    this.executeQueue()
+    this.addDelayTask()
   }
   clean () {
     this._asyncDataCtrl.queue.length = 0;
