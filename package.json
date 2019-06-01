@@ -1,6 +1,6 @@
 {
   "name": "@zyyz/vue-async-data",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "fetch data from remote",
   "main": "dist/index.js",
   "private": false,
