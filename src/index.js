@@ -66,6 +66,15 @@ class AsyncController {
     queueCpy.forEach((varName) => {
       let option = options[varName]
       let promise =  option.fetch.call(vm)
+      // 如果返回值为null
+      if (promise == null) {
+        return
+      }
+      // 如果返回值不是Promise
+      if (Object.getPrototypeOf(promise) !== Promise.prototype) {
+        window.console.warn(`the return value of fetch function is not a Promise project:varName=[${varName}]`)
+        return
+      }
       let errorHandler = option.error
       promise.then((resp) => {
         // merge to data when success
