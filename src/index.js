@@ -27,6 +27,8 @@ class AsyncController {
         option.watch.forEach((v) => {
           vm.$watch(v, () => {
             this.fetchVar(varName)
+          }, {
+            deep: true
           })
         })
       }
