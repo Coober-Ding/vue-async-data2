@@ -141,7 +141,7 @@ function preSetAsyncData (vm, options) {
     varNames.forEach((varName) => {
       _preSetAsyncData[varName] = null
     })
-    return Object.assign(_dataOption(), _preSetAsyncData)
+    return Object.assign(_dataOption.call(this), _preSetAsyncData)
   }
 }
 // 验证option
