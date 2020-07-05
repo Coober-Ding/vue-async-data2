@@ -65,7 +65,6 @@ import AsyncDataMixin from '@zyyz/vue-async-data'
 init和fetch这两个选项是必填的，fetch函数返回的必须是一个Promise对象。watch选项可以watch一个或多个data、prop或computed，其实就是利用了$watch()。  
 请求数据的时机是activated和mounted这两个生命周期钩子。fetch和error中的this是当前的vm对象，和method一样。  
 asyncData和data一样支持mixin。  
-如果想强制刷新数据，可以调用this.$fetch('dataName')
 ## details
 延时刷新：  
 异步数据的拉取和vue的render机制差不多，其内部存在一个队列。一个异步数据需要被拉取时，它会加入到队列中。队列会在nextTick中被执行，这样就实现了一个delay机制，防止在一个tick中重复刷新。    

@@ -1,1 +1,284 @@
-!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e(require("vue")):"function"==typeof define&&define.amd?define(["vue"],e):t.AsyncDataMixin=e(t.Vue)}(this,function(t){"use strict";function i(t,e){for(var n=0;n<e.length;n++){var a=e[n];a.enumerable=a.enumerable||!1,a.configurable=!0,"value"in a&&(a.writable=!0),Object.defineProperty(t,a.key,a)}}function c(t){return null!==t&&"function"==typeof t}function s(t){return null!=t}t=t&&t.hasOwnProperty("default")?t.default:t;var o=function(){function n(t,e){!function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}(this,n),this.vm=t,this.options=e,this._asyncDataCtrl={hasWaitQue:!1,suspend:!1,queue:[]}}var t,e,a;return t=n,(e=[{key:"init",value:function(){var n=this,a=this.vm,i=this.options;Object.keys(i).forEach(function(e){var t=i[e];c(t.init)&&n.initVar(e,t.init),s(t.watch)&&t.watch.forEach(function(t){a.$watch(t,function(){n.fetchVar(e)},{deep:!0})})})}},{key:"initVar",value:function(t,e){var n=this.vm;s(n[t])?n[t]=e():n.$set(n,t,e())}},{key:"addToQueue",value:function(t){var e=this._asyncDataCtrl.queue;-1==e.indexOf(t)&&e.push(t),this._asyncDataCtrl.suspend||this.addDelayTask()}},{key:"executeQueue",value:function(){var i=this.vm,s=this.options,t=this._asyncDataCtrl.queue;if(0!=t.length){var e=t.slice(0);t.length=0,e.forEach(function(e){var t=s[e],n=t.fetch.call(i);if(null!=n)if(Object.getPrototypeOf(n)===Promise.prototype){var a=t.error;n.then(function(t){i[e]=t},function(t){c(a)?a.call(i,t):window.console.warn("you got a error when fecth asyncData[".concat(e,"] from remote"))})}else window.console.warn("the return value of fetch function is not a Promise project:varName=[".concat(e,"]"))})}}},{key:"addDelayTask",value:function(){var t=this;this._asyncDataCtrl.hasWaitQue||(this.vm.$nextTick(function(){t._asyncDataCtrl.hasWaitQue=!1,t._asyncDataCtrl.suspend||t.executeQueue()}),this._asyncDataCtrl.hasWaitQue=!0)}},{key:"fetchVar",value:function(t){this.addToQueue(t)}},{key:"fetchData",value:function(){var e=this;Object.keys(this.options).forEach(function(t){e.fetchVar(t)})}},{key:"fetch",value:function(t){this.fetchVar(t)}},{key:"suspend",value:function(){this._asyncDataCtrl.suspend=!0}},{key:"resume",value:function(){this._asyncDataCtrl.suspend=!1,this.addDelayTask()}},{key:"clean",value:function(){this._asyncDataCtrl.queue.length=0}}])&&i(t.prototype,e),a&&i(t,a),n}();function e(t,e){if(a=!0,Object.keys(n=e).forEach(function(t){var e=n[t];s(e)&&c(e.fetch)&&c(e.init)||(a=!1)}),!a)throw Error("async_data.err.options_volidate_fail");var n,a;return new o(t,e)}var n={beforeCreate:function(){var t,e,n,a,i=this.$options.asyncData;s(i)&&0<Object.keys(i).length&&(t=this,e=Object.keys(i),n=t.$options.data,a={},t.$options.data=function(){return e.forEach(function(t){a[t]=null}),Object.assign(n.call(this),a)})},created:function(){var t=this.$options.asyncData;s(t)&&0<Object.keys(t).length&&(this.$async=e(this,t),this.$async.init())},activated:function(){s(this.$async)&&this.$async.fetchData()},mounted:function(){s(this.$async)&&this.$async.fetchData()}},a=t.config.optionMergeStrategies;return a.asyncData=a.methods,n});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue')) :
+  typeof define === 'function' && define.amd ? define(['vue'], factory) :
+  (global.AsyncDataMixin = factory(global.Vue));
+}(this, (function (Vue) { 'use strict';
+
+  Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  function isFunction(func) {
+    return func !== null && typeof func === 'function';
+  }
+  function isDef(v) {
+    return v !== undefined && v !== null;
+  }
+
+  var AsyncController =
+  /*#__PURE__*/
+  function () {
+    function AsyncController(vm, options) {
+      _classCallCheck(this, AsyncController);
+
+      this.vm = vm;
+      this.options = options;
+      this._asyncDataCtrl = {
+        hasWaitQue: false,
+        suspend: false,
+        queue: []
+      };
+    }
+
+    _createClass(AsyncController, [{
+      key: "init",
+      value: function init() {
+        var _this = this;
+
+        var vm = this.vm;
+        var options = this.options;
+        var varNames = Object.keys(options);
+        varNames.forEach(function (varName) {
+          var option = options[varName]; // 初始化数据
+
+          if (isFunction(option.init)) {
+            _this.initVar(varName, option.init);
+          } // 添加watch
+
+
+          if (isDef(option.watch)) {
+            option.watch.forEach(function (v) {
+              vm.$watch(v, function () {
+                _this.fetchVar(varName);
+              }, {
+                deep: true
+              });
+            });
+          }
+        });
+      }
+    }, {
+      key: "initVar",
+      value: function initVar(name, initFunc) {
+        var vm = this.vm;
+
+        if (!isDef(vm[name])) {
+          vm.$set(vm, name, initFunc());
+        } else {
+          vm[name] = initFunc();
+        }
+      }
+    }, {
+      key: "addToQueue",
+      value: function addToQueue(varName) {
+        var queue = this._asyncDataCtrl.queue;
+
+        if (queue.indexOf(varName) === -1) {
+          queue.push(varName);
+        }
+
+        if (this._asyncDataCtrl.suspend) {
+          return;
+        }
+
+        this.addDelayTask();
+      }
+    }, {
+      key: "executeQueue",
+      value: function executeQueue() {
+        var vm = this.vm;
+        var options = this.options;
+        var queue = this._asyncDataCtrl.queue;
+
+        if (queue.length == 0) {
+          return;
+        } // copy一下队列， 屏蔽在后面的执行过程中触发addToQueue(如果可能的话)引起的队列增长
+
+
+        var queueCpy = queue.slice(0);
+        queue.length = 0;
+        queueCpy.forEach(function (varName) {
+          var option = options[varName];
+          var promise = option.fetch.call(vm); // 如果返回值为null
+
+          if (promise == null) {
+            return;
+          } // 如果返回值不是Promise
+
+
+          if (Object.getPrototypeOf(promise) !== Promise.prototype) {
+            window.console.warn("the return value of fetch function is not a Promise project:varName=[".concat(varName, "]"));
+            return;
+          }
+
+          var errorHandler = option.error;
+          promise.then(function (resp) {
+            // merge to data when success
+            vm[varName] = resp;
+          }, function (resp) {
+            // call error hook or log
+            if (isFunction(errorHandler)) {
+              errorHandler.call(vm, resp);
+            } else {
+              window.console.warn("you got a error when fecth asyncData[".concat(varName, "] from remote"));
+            }
+          });
+        });
+      }
+    }, {
+      key: "addDelayTask",
+      value: function addDelayTask() {
+        var _this2 = this;
+
+        // 在nextTick刷新数据
+        if (!this._asyncDataCtrl.hasWaitQue) {
+          //添加一个延时任务 在下一个tick开始发起队列内的异步请求
+          var vm = this.vm;
+          vm.$nextTick(function () {
+            _this2._asyncDataCtrl.hasWaitQue = false;
+
+            if (!_this2._asyncDataCtrl.suspend) {
+              _this2.executeQueue();
+            }
+          });
+          this._asyncDataCtrl.hasWaitQue = true;
+        }
+      }
+    }, {
+      key: "fetchVar",
+      value: function fetchVar(varName) {
+        this.addToQueue(varName);
+      }
+    }, {
+      key: "fetchData",
+      value: function fetchData() {
+        var _this3 = this;
+
+        var options = this.options;
+        Object.keys(options).forEach(function (varName) {
+          _this3.fetchVar(varName);
+        });
+      }
+    }, {
+      key: "fetch",
+      value: function fetch(varName) {
+        if (varName == null) {
+          return this.fetchData();
+        }
+
+        this.fetchVar(varName);
+      }
+    }, {
+      key: "suspend",
+      value: function suspend() {
+        this._asyncDataCtrl.suspend = true;
+      }
+    }, {
+      key: "resume",
+      value: function resume() {
+        this._asyncDataCtrl.suspend = false;
+        this.addDelayTask();
+      }
+    }, {
+      key: "clean",
+      value: function clean() {
+        this._asyncDataCtrl.queue.length = 0;
+      }
+    }]);
+
+    return AsyncController;
+  }(); // 因为$set的限制，所以要改造$option.data 预先添加根数据
+
+
+  function preSetAsyncData(vm, options) {
+    var varNames = Object.keys(options);
+    var _dataOption = vm.$options.data;
+    var _preSetAsyncData = {};
+
+    vm.$options.data = function proxyOption() {
+      varNames.forEach(function (varName) {
+        _preSetAsyncData[varName] = null;
+      });
+      return Object.assign(_dataOption.call(this), _preSetAsyncData);
+    };
+  } // 验证option
+
+
+  function validityOptions(options) {
+    var result = true;
+    Object.keys(options).forEach(function (key) {
+      var option = options[key];
+
+      if (!isDef(option) || !isFunction(option.fetch) || !isFunction(option.init)) {
+        result = false;
+      }
+    });
+    return result;
+  } // 构造
+
+
+  function createAsyncData(vm, options) {
+    if (!validityOptions(options)) {
+      throw new Error('async_data.err.options_volidate_fail');
+    } // 添加队列控制
+
+
+    var async = new AsyncController(vm, options);
+    return async;
+  } // mixin
+
+
+  var AsyncDataMixin = {
+    beforeCreate: function beforeCreate() {
+      var options = this.$options.asyncData;
+
+      if (isDef(options) && Object.keys(options).length > 0) {
+        preSetAsyncData(this, options);
+      }
+    },
+    created: function created() {
+      var options = this.$options.asyncData;
+
+      if (isDef(options) && Object.keys(options).length > 0) {
+        this.$async = createAsyncData(this, options);
+        this.$async.init();
+      }
+    },
+    activated: function activated() {
+      if (isDef(this.$async)) {
+        this.$async.fetchData();
+      }
+    },
+    mounted: function mounted() {
+      if (isDef(this.$async)) {
+        this.$async.fetchData();
+      }
+    }
+  }; // 自定义asyncData的合并策略
+
+  var strategies = Vue.config.optionMergeStrategies;
+  strategies.asyncData = strategies.methods;
+
+  return AsyncDataMixin;
+
+})));

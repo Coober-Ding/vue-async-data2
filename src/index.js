@@ -119,6 +119,9 @@ class AsyncController {
     })
   }
   fetch (varName) {
+    if (varName == null) {
+      return this.fetchData()
+    }
     this.fetchVar(varName)
   }
   suspend () {
